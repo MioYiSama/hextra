@@ -24,6 +24,7 @@
       {{- $dest = (relURL (strings.TrimPrefix "/" $dest)) -}}
     {{- end -}}
   {{- else -}}
+    {{/* Resolve page bundle resource for multilingual permalink */}}
     {{- with .PageInner.Resources.Get (strings.TrimPrefix "./" $url.Path) -}}
       {{- $query := cond $url.RawQuery (printf "?%s" $url.RawQuery) "" -}}
       {{- $fragment := cond $url.Fragment (printf "#%s" $url.Fragment) "" -}}
