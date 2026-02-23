@@ -24,7 +24,7 @@
       {{- $dest = (relURL (strings.TrimPrefix "/" $dest)) -}}
     {{- end -}}
   {{- else -}}
-    {{- with .PageInner.Resources.Get (strings.TrimPrefix "./" (urls.PathUnescape $url.Path)) -}}
+    {{- with .PageInner.Resources.Get (strings.TrimPrefix "./" $url.Path) -}}
       {{- $query := cond $url.RawQuery (printf "?%s" $url.RawQuery) "" -}}
       {{- $fragment := cond $url.Fragment (printf "#%s" $url.Fragment) "" -}}
       {{- $dest = printf "%s%s%s" .RelPermalink $query $fragment -}}
