@@ -24,20 +24,14 @@
       {{- $dest = (relURL (strings.TrimPrefix "/" $dest)) -}}
     {{- end -}}
   {{- else -}}
-    {{- /* Decode %20 to handle filenames with spaces (e.g., 'image 1.png') */ -}}
-    {{- $matchPath := replace $url.Path "%20" " " -}}
-    
-    {{- /* Use wildcard block to safely match paths even if they start with './' */ -}}
-    {{- $resource := .PageInner.Resources.GetMatch (printf "*%s*" $matchPath) -}}
-    
-    {{- if $resource -}}
+    {{- with .PageInner.Resources.Get (strings.TrimPrefix "./" (urls.PathUnescape $url.Path)) -}}
       {{- $query := cond $url.RawQuery (printf "?%s" $url.RawQuery) "" -}}
       {{- $fragment := cond $url.Fragment (printf "#%s" $url.Fragment) "" -}}
-      {{- /* Outputs the correct cross-language relative permalink */ -}}
-      {{- $dest = printf "%s%s%s" $resource.RelPermalink $query $fragment -}}
-    {{- else if and $isPage (not $startsWithRelative) -}}
-      {{/* Fallback for non-bundle individual sibling pages */}}
-      {{ $dest = (printf "../%s" $dest) }}
+      {{- $dest = printf "%s%s%s" .RelPermalink $query $fragment -}}
+    {{- else -}}
+      {{- if and $isPage (not $startsWithRelative) -}}
+        {{ $dest = (printf "../%s" $dest) }}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
